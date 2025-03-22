@@ -26,13 +26,30 @@ public:
         data = val;
         left = right = NULL;
     }
-    friend BST;
 };
+
 class BST
 {
 private:
     Node *root;
-    // Inorder Recursive
+
+    void insert(Node *&root, Node *tobeInserted)
+    {
+        if (root == NULL)
+        {
+            root = tobeInserted;
+            return;
+        }
+        if (tobeInserted->data < root->data)
+        {
+            insert(root->left, tobeInserted);
+        }
+        else
+        {
+            insert(root->right, tobeInserted);
+        }
+    }
+
     void inOrderRecursive(Node *root)
     {
         if (root == NULL)
@@ -43,7 +60,7 @@ private:
         cout << root->data << " ";
         inOrderRecursive(root->right);
     }
-    // Pre Order Recursive
+
     void preOrderRecursive(Node *root)
     {
         if (root == NULL)
@@ -54,7 +71,7 @@ private:
         preOrderRecursive(root->left);
         preOrderRecursive(root->right);
     }
-    // Post order Recursive
+
     void postOrderRecursive(Node *root)
     {
         if (root == NULL)
@@ -66,83 +83,15 @@ private:
         cout << root->data << " ";
     }
 
-    // Inorder Iterative
-    void inOrderIterative(Node *root)
+    void swapChildren(Node *root)
     {
         if (root == NULL)
         {
             return;
         }
-        stack<Node *> stackInorder;
-        Node *current = root;
-        while (current != NULL && !stackInorder.empty())
-        {
-            while (current != NULL)
-            {
-                stackInorder.push(current);
-                current = current->left;
-            }
-            current = stackInorder.top();
-            stackInorder.pop();
-            cout << current->data << " ";
-            current = current->right;
-        }
-    }
-
-    void preorderIterative(Node *root)
-    {
-        if (root == NULL)
-        {
-            return;
-        }
-        stack<Node *> stackPreorder;
-        Node *current = root;
-        stackPreorder.push(root);
-        while (current != NULL && !stackPreorder.empty())
-        {
-            current = stackPreorder.top();
-            stackPreorder.pop();
-            cout << current->data << " ";
-            if (current->right != NULL)
-            {
-                stackPreorder.push(current->right);
-            }
-            if (current->left != NULL)
-            {
-                stackPreorder.push(current->left);
-            }
-        }
-    }
-    void postorderIterative(Node *root)
-    {
-        if (root == NULL)
-        {
-            return;
-        }
-        stack<Node *> stackPostOrder1;
-        stack<Node *> stackPostOrder2;
-
-        Node *current = root;
-        stackPostOrder1.push(root);
-        while (current != NULL && !stackPostOrder1.empty())
-        {
-            current = stackPostOrder1.top();
-            stackPostOrder1.pop();
-            stackPostOrder2.push(current);
-            if (current->left != NULL)
-            {
-                stackPostOrder1.push(current->left);
-            }
-            if (current->right != NULL)
-            {
-                stackPostOrder1.push(current->right);
-            }
-        }
-        while (!stackPostOrder2.empty())
-        {
-            cout << stackPostOrder2.top()->data << " ";
-            stackPostOrder2.pop();
-        }
+        swapChildren(root->left);
+        swapChildren(root->right);
+        swap(root->left, root->right);
     }
 
     int findHeight(Node *root)
@@ -152,61 +101,6 @@ private:
             return 0;
         }
         return 1 + max(findHeight(root->left), findHeight(root->right));
-    }
-
-    // counting internal nodes or all nodes using inorder
-    void recur(Node *root, int &count, int flag)
-    {
-        if (root == NULL)
-        {
-            return;
-        }
-        recur(root->left, count, flag);
-
-        // flag = 1 for Internal nodes
-        // flag = 0 for All Nodes
-        // flag = -1 for Lead Nodes
-
-        if (flag == 1)
-        {
-            if (root->left != NULL || root->right != NULL)
-            {
-                count++;
-            }
-        }
-        else if (flag == -1)
-        {
-            if (root->left == NULL && root->right == NULL)
-            {
-                count++;
-            }
-        }
-        else
-        {
-            count++;
-        }
-        recur(root->right, count, flag);
-    }
-    int countNodes(Node *root)
-    {
-        int flag = 0;
-        int count = 0;
-        recur(root, count, flag);
-        return count;
-    }
-    int countInternalNodes(Node *root)
-    {
-        int flag = 1;
-        int count = 0;
-        recur(root, count, flag);
-        return count;
-    }
-    int countLeafNodes(Node *root)
-    {
-        int flag = -1;
-        int count = 0;
-        recur(root, count, flag);
-        return count;
     }
 
     void deleteWholeTree(Node *root)
@@ -219,43 +113,173 @@ private:
         deleteWholeTree(root->right);
         delete root;
     }
-    BST operator=(BST &obj)
-    {
-        if (this == &obj)
-        {
-            return *this;
-        }
-        deleteWholeTree(this->root);
-        this->root = copyTree(obj.root);
-        return *this;
-    }
+
     Node *copyTree(Node *root)
     {
         if (root == NULL)
         {
             return NULL;
         }
-        Node *copyRoot = new Node(*root);
+        Node *copyRoot = new Node(root->data);
         copyRoot->left = copyTree(root->left);
         copyRoot->right = copyTree(root->right);
-
         return copyRoot;
     }
 
-public:
-    BST(Node *n) // Paramter wala constructor
+    void recur(Node *root, int &count, int flag)
     {
-        root = n;
+        if (root == NULL)
+        {
+            return;
+        }
+        recur(root->left, count, flag);
+
+        if (flag == 1 && (root->left != NULL || root->right != NULL))
+        {
+            count++;
+        }
+        else if (flag == -1 && (root->left == NULL && root->right == NULL))
+        {
+            count++;
+        }
+        else if (flag == 0)
+        {
+            count++;
+        }
+
+        recur(root->right, count, flag);
     }
 
-    BST() // Bina Parameter wala constructorś
+public:
+    BST() { root = NULL; }
+
+    void insert(int val)
     {
+        Node *newNode = new Node(val);
+        insert(root, newNode);
+    }
+
+    void inOrder() { inOrderRecursive(root); }
+    void preOrder() { preOrderRecursive(root); }
+    void postOrder() { postOrderRecursive(root); }
+
+    void swapTree() { swapChildren(root); }
+
+    int height() { return findHeight(root); }
+
+    BST copy()
+    {
+        BST newTree;
+        newTree.root = copyTree(root);
+        return newTree;
+    }
+
+    int countNodes()
+    {
+        int count = 0;
+        recur(root, count, 0);
+        return count;
+    }
+
+    int countInternalNodes()
+    {
+        int count = 0;
+        recur(root, count, 1);
+        return count;
+    }
+
+    int countLeafNodes()
+    {
+        int count = 0;
+        recur(root, count, -1);
+        return count;
+    }
+
+    void clearTree()
+    {
+        deleteWholeTree(root);
         root = NULL;
     }
 };
 
 int main()
 {
+    BST tree;
+    int choice, val;
+
+    do
+    {
+        cout << "\nMenu:";
+        cout << "\n1. Insert Node";
+        cout << "\n2. Inorder Traversal";
+        cout << "\n3. Preorder Traversal";
+        cout << "\n4. Postorder Traversal";
+        cout << "\n5. Swap Tree";
+        cout << "\n6. Find Height";
+        cout << "\n7. Copy Tree";
+        cout << "\n8. Count All Nodes";
+        cout << "\n9. Count Internal Nodes";
+        cout << "\n10. Count Leaf Nodes";
+        cout << "\n11. Clear Tree";
+        cout << "\n12. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> val;
+            tree.insert(val);
+            break;
+        case 2:
+            cout << "Inorder Traversal: ";
+            tree.inOrder();
+            cout << endl;
+            break;
+        case 3:
+            cout << "Preorder Traversal: ";
+            tree.preOrder();
+            cout << endl;
+            break;
+        case 4:
+            cout << "Postorder Traversal: ";
+            tree.postOrder();
+            cout << endl;
+            break;
+        case 5:
+            tree.swapTree();
+            cout << "Tree swapped." << endl;
+            break;
+        case 6:
+            cout << "Height of Tree: " << tree.height() << endl;
+            break;
+        case 7:
+        {
+            BST copiedTree = tree.copy();
+            cout << "Tree copied." << endl;
+            break;
+        }
+        case 8:
+            cout << "Total Nodes: " << tree.countNodes() << endl;
+            break;
+        case 9:
+            cout << "Internal Nodes: " << tree.countInternalNodes() << endl;
+            break;
+        case 10:
+            cout << "Leaf Nodes: " << tree.countLeafNodes() << endl;
+            break;
+        case 11:
+            tree.clearTree();
+            cout << "Tree cleared." << endl;
+            break;
+        case 12:
+            cout << "Exiting program." << endl;
+            break;
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+        }
+    } while (choice != 12);
 
     return 0;
 }
