@@ -28,12 +28,12 @@ public:
     }
 };
 
-class BST
+class BT
 {
 private:
     Node *root;
 
-    void insert(Node *&root, Node *tobeInserted)
+    void insertNode(Node *&root, Node *tobeInserted)
     {
         if (root == NULL)
         {
@@ -42,11 +42,11 @@ private:
         }
         if (tobeInserted->data < root->data)
         {
-            insert(root->left, tobeInserted);
+            insertNode(root->left, tobeInserted);
         }
         else
         {
-            insert(root->right, tobeInserted);
+            insertNode(root->right, tobeInserted);
         }
     }
 
@@ -151,12 +151,13 @@ private:
     }
 
 public:
-    BST() { root = NULL; }
+    BT() { root = NULL; }
+    BT(Node *rooot) { root = rooot; }
 
     void insert(int val)
     {
         Node *newNode = new Node(val);
-        insert(root, newNode);
+        insertNode(root, newNode);
     }
 
     void inOrder() { inOrderRecursive(root); }
@@ -167,9 +168,9 @@ public:
 
     int height() { return findHeight(root); }
 
-    BST copy()
+    BT copy()
     {
-        BST newTree;
+        BT newTree;
         newTree.root = copyTree(root);
         return newTree;
     }
@@ -200,28 +201,36 @@ public:
         deleteWholeTree(root);
         root = NULL;
     }
+    void insertArray(int arr[], int size)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            insert(arr[i]);
+        }
+    }
 };
 
 int main()
 {
-    BST tree;
+    BT tree;
     int choice, val;
 
     do
     {
         cout << "\nMenu:";
         cout << "\n1. Insert Node";
-        cout << "\n2. Inorder Traversal";
-        cout << "\n3. Preorder Traversal";
-        cout << "\n4. Postorder Traversal";
-        cout << "\n5. Swap Tree";
-        cout << "\n6. Find Height";
-        cout << "\n7. Copy Tree";
-        cout << "\n8. Count All Nodes";
-        cout << "\n9. Count Internal Nodes";
-        cout << "\n10. Count Leaf Nodes";
-        cout << "\n11. Clear Tree";
-        cout << "\n12. Exit";
+        cout << "\n2. Insert Multiple Elements";
+        cout << "\n3. Inorder Traversal";
+        cout << "\n4. Preorder Traversal";
+        cout << "\n5. Postorder Traversal";
+        cout << "\n6. Swap Tree";
+        cout << "\n7. Find Height";
+        cout << "\n8. Copy Tree";
+        cout << "\n9. Count All Nodes";
+        cout << "\n10. Count Internal Nodes";
+        cout << "\n11. Count Leaf Nodes";
+        cout << "\n12. Clear Tree";
+        cout << "\n13. Exit";
         cout << "\nEnter your choice: ";
         cin >> choice;
 
@@ -233,53 +242,69 @@ int main()
             tree.insert(val);
             break;
         case 2:
+        {
+            int n;
+            cout << "Enter the number of elements: ";
+            cin >> n;
+            int arr[n];
+            cout << "Enter " << n << " elements: ";
+            for (int i = 0; i < n; i++)
+            {
+                cin >> arr[i];
+            }
+            tree.insertArray(arr, n);
+            cout << "Elements inserted successfully." << endl;
+            break;
+        }
+        case 3:
             cout << "Inorder Traversal: ";
             tree.inOrder();
             cout << endl;
             break;
-        case 3:
+        case 4:
             cout << "Preorder Traversal: ";
             tree.preOrder();
             cout << endl;
             break;
-        case 4:
+        case 5:
             cout << "Postorder Traversal: ";
             tree.postOrder();
             cout << endl;
             break;
-        case 5:
+        case 6:
             tree.swapTree();
             cout << "Tree swapped." << endl;
             break;
-        case 6:
+        case 7:
             cout << "Height of Tree: " << tree.height() << endl;
             break;
-        case 7:
+        case 8:
         {
-            BST copiedTree = tree.copy();
+            BT copiedTree = tree.copy();
             cout << "Tree copied." << endl;
             break;
         }
-        case 8:
+        case 9:
             cout << "Total Nodes: " << tree.countNodes() << endl;
             break;
-        case 9:
+        case 10:
             cout << "Internal Nodes: " << tree.countInternalNodes() << endl;
             break;
-        case 10:
+        case 11:
             cout << "Leaf Nodes: " << tree.countLeafNodes() << endl;
             break;
-        case 11:
+        case 12:
             tree.clearTree();
             cout << "Tree cleared." << endl;
             break;
-        case 12:
+        case 13:
             cout << "Exiting program." << endl;
             break;
+
         default:
             cout << "Invalid choice! Please try again." << endl;
         }
-    } while (choice != 12);
+    } while (choice != 13);
 
     return 0;
 }
