@@ -1,5 +1,4 @@
 #include <iostream>
-#include <climits>
 using namespace std;
 
 class Node
@@ -10,7 +9,8 @@ public:
     Node(int val)
     {
         data = val;
-        left = right = NULL;
+        left = NULL;
+        right = NULL;
     }
 };
 
