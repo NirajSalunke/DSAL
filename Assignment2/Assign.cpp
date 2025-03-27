@@ -189,10 +189,10 @@ int main()
         }
         case 2:
         {
-            int n;
+            int n, *arr;
             cout << "Enter the number of elements: ";
             cin >> n;
-            int arr[n];
+            arr = new int[n];
             cout << "Enter " << n << " elements: ";
             for (int i = 0; i < n; i++)
             {
