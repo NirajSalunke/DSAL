@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <limits>
-
 #include <cstdint>
 using namespace std;
 
@@ -12,7 +11,7 @@ class Employee
 public:
     string name;
     int empID;
-    streampos loc; // byte-offset in file
+    streampos loc;
 
     Employee() : name(""), empID(0), loc(0) {}
 
