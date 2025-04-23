@@ -1,5 +1,4 @@
 /*
-Author - Shantanu Wable
 
 Department maintains a student information file. The file contains roll number, name, division and address.
 Allow user to add, delete information of student. Display information of particular student.

@@ -1,7 +1,6 @@
 /*
- Author - Shantanu Wable
 
- Data Structure Explanation: https://www.javatpoint.com/avl-tree
+
 
  A dictionary stores keywords and its meanings. Provide facility for adding new keywords, deleting keywords,
  updating values of an entry. Provide facility to display whole data in sorted Ascending / Descending order.
